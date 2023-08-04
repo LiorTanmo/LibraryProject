@@ -2,10 +2,9 @@ package ru.lior.tutorial.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import ru.lior.tutorial.dao.PersonDAO;
+import ru.lior.tutorial.models.Person;
 
 @Controller
 @RequestMapping("/people")
@@ -30,4 +29,15 @@ public class PeopleController {
         return "people/show";
     }
 
+    @GetMapping("/new")
+    public String newPerson(Model model){
+        model.addAttribute("person", new Person());
+        return "people/new";
+    }
+
+    @PostMapping()
+    public String create(@ModelAttribute("person") Person person){
+        dao.save(person);
+        return "redirect:/people";
+    }
 }

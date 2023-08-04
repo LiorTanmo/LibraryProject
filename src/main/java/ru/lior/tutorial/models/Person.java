@@ -1,8 +1,14 @@
 package ru.lior.tutorial.models;
 
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
 public class Person {
     private int id;
     private String name;
+
+    public Person() {
+    }
 
     public Person(int id, String name) {
         this.id = id;
@@ -24,4 +30,5 @@ public class Person {
     public void setName(String name) {
         this.name = name;
     }
+
 }
