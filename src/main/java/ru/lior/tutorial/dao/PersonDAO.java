@@ -11,6 +11,7 @@ import ru.lior.tutorial.models.Person;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class PersonDAO {
@@ -25,40 +26,42 @@ public class PersonDAO {
         return jdbcTemplate.query("select * from person", new BeanPropertyRowMapper<>(Person.class));
     }
 
+    public Optional<Person> show(String email){
+        return jdbcTemplate.query("Select * from Person where email=?",new Object[]{email},
+                new BeanPropertyRowMapper<>(Person.class)).stream().findAny();
+    }
     public Person show(int id) {
         return jdbcTemplate.query("SELECT * FROM person where id = ?", new Object[]{id},
                 new BeanPropertyRowMapper<>(Person.class)).stream().findAny().orElse(null);
     }
 
     public void save(Person person){
-        jdbcTemplate.update("INSERT INTO person  values (1,?,?,?)",
-                person.getName(), person.getAge(), person.getEmail());
+        jdbcTemplate.update("INSERT INTO person (name, age, email, address) values (?,?,?,?)",
+                person.getName(), person.getAge(), person.getEmail(), person.getAddress());
     }
 
     public void update(int id, Person updPerson){
 
-        jdbcTemplate.update("UPDATE person set name=?, age = ?, email = ? where id=?",
-                updPerson.getName(), updPerson.getAge(), updPerson.getEmail(), new Object[]{id});
+        jdbcTemplate.update("UPDATE person set name=?, age = ?, email = ?, adress = ? where id=?",
+                updPerson.getName(), updPerson.getAge(), updPerson.getEmail(), updPerson.getAddress(), new Object[]{id});
 
     }
 
     public void delete(int id){
-        jdbcTemplate.update("DELETE from person where id=?", new Object[]{id});
+        jdbcTemplate.update("DELETE from person where id=?", id);
 
     }
 
 
-
-
     /////////////////////////BATCH UPDATE PERFORMANCE TEST ////////////////////////////////
 
-    public void testMultiUpdate(){
+   /* public void testMultiUpdate(){
         List<Person> people = create1000people();
 
         long b4 = System.currentTimeMillis();
 
         for (Person person: people) {
-            jdbcTemplate.update("INSERT INTO person  values (1,?,?,?)",
+            jdbcTemplate.update("INSERT INTO person  values (?,?,?)",
                     person.getName(), person.getAge(), person.getEmail());
         }
 
@@ -70,7 +73,7 @@ public class PersonDAO {
     private List<Person> create1000people(){
         List<Person> people = new ArrayList<>();
         for (int i = 0; i < 1000; i++) {
-            people.add(new Person(i, "MeatBag"+i, i%40 , i+"@mail.ru"));
+            people.add(new Person( "MeatBag"+i, i%40 , i+"@mail.ru", address));
         }
         return people;
     }
@@ -84,7 +87,6 @@ public class PersonDAO {
         new BatchPreparedStatementSetter(){
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
-                ps.setInt(1,people.get(i).getId());
                 ps.setString(2,people.get(i).getName());
                 ps.setInt(3,people.get(i).getAge());
                 ps.setString(4,people.get(i).getEmail());
@@ -99,5 +101,5 @@ public class PersonDAO {
         long after = System.currentTimeMillis();
 
         System.out.println("Time: " + (after-b4));
-    }
+    }*/
 }

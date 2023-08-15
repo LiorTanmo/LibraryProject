@@ -25,7 +25,6 @@ import java.util.Objects;
 @EnableWebMvc
 @PropertySource("classpath:database.properties")
 public class SpringConfig implements WebMvcConfigurer {
-
     private final ApplicationContext applicationContext;
     private final Environment environment;
     @Autowired
@@ -64,9 +63,8 @@ public class SpringConfig implements WebMvcConfigurer {
 
         dataSource.setDriverClassName(Objects.requireNonNull(environment.getProperty("driver")));
         dataSource.setUrl(environment.getProperty("url"));
-        dataSource.setUsername(environment.getProperty("username"));
+        dataSource.setUsername(environment.getProperty("pgsqluser"));
         dataSource.setPassword(environment.getProperty("password"));
-
         return dataSource;
     }
 
