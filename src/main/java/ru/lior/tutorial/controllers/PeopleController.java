@@ -2,13 +2,19 @@ package ru.lior.tutorial.controllers;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.lior.tutorial.dao.BookDAO;
 import ru.lior.tutorial.dao.PersonDAO;
+import ru.lior.tutorial.models.Book;
 import ru.lior.tutorial.models.Person;
 import ru.lior.tutorial.util.PersonValidator;
+
+import java.util.List;
+
 //TODO
 @Controller
 @RequestMapping("/people")
@@ -21,19 +27,23 @@ public class PeopleController {
     public PeopleController(PersonDAO dao, PersonValidator personValidator) {
         this.dao = dao;
         this.personValidator = personValidator;
+
     }
 
     @GetMapping()
     public String index(Model model){
-        model.addAttribute("people",dao.index());
+        model.addAttribute("people", dao.index());
         return "people/index";
     }
 
     @GetMapping("/{id}")
     public String show(@PathVariable("id") int id, Model model){
         model.addAttribute("person", dao.show(id));
+        model.addAttribute("personalBooks", dao.indexPersonBooks(id));
         return "people/show";
     }
+
+
 
     @GetMapping("/new")
     public String newPerson(@ModelAttribute("person") Person person){

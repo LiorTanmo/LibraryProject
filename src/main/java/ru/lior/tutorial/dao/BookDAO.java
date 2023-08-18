@@ -21,29 +21,34 @@ public class BookDAO {
     }
 
     public List<Book> index(){
-        return jdbcTemplate.query("select name, author, year from book", new BeanPropertyRowMapper<>(Book.class));
+        return jdbcTemplate.query("select * from book", new BeanPropertyRowMapper<>(Book.class));
     }
 
-    public Optional<Book> show(int id) {
+    public Book show(int id) {
         return jdbcTemplate.query("SELECT * FROM book where book_id = ?", new Object[]{id},
-                new BeanPropertyRowMapper<>(Book.class)).stream().findAny();
+                new BeanPropertyRowMapper<>(Book.class)).stream().findAny().orElse(null);
     }
 
 
     public void save(Book book){
-        jdbcTemplate.update("INSERT INTO book (name, year) values (?,?,?)",
+        jdbcTemplate.update("INSERT INTO book (name, author, year) values (?,?,?)",
                 book.getName(), book.getAuthor(), book.getYear());
     }
 
     public void update(int id, Book updBook){
         jdbcTemplate.update("UPDATE book set name=?, author = ?, year = ?  where book_id=?",
-                updBook.getName(),updBook.getAuthor(), updBook.getYear(), id);
+                updBook.getName(), updBook.getAuthor(), updBook.getYear(), id);
 
     }
 
-    public List<Book> indexFreeBooks(){
-        return jdbcTemplate.query("select name, author, year from book where person_id = null",
-                new BeanPropertyRowMapper<>(Book.class));
+    public  Optional<Person> getOwner(int book_id){
+       return jdbcTemplate.query("Select p.* from book join public.person p on p.person_id = book.person_id " +
+                       "where book_id = ?", new Integer[]{book_id},
+               new BeanPropertyRowMapper<>(Person.class)).stream().findAny();
+    }
+
+    public void assignBook(Integer person_id, int book_id){
+        jdbcTemplate.update("UPDATE book set person_id=?  where book_id=?", person_id, book_id);
     }
 
     public void delete(int id){

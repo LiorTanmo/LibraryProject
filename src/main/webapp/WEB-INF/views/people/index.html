@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!--TODO-->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -8,12 +7,12 @@
 <body>
 
 <div th:each="person : ${people}">
-    <a th:href="@{/people/{id}(id=${person.getId()})}" th:text="${person.getName()}+ ', ' +${person.getAge()}">User</a>
+    <a th:href="@{/people/{id}(id=${person.getPerson_id()})}" th:text="${person.getName()} + ', ' +${person.getYear()}">User</a>
 </div>
 <br/>
 <hr/>
 
-<a href="/CRUD_REST_tutorial_war_exploded/people/new">Order new skinbags</a>
+<a href="/TutorProject1_war_exploded/people/new">Добавить человека</a>
 
 </body>
 </html>

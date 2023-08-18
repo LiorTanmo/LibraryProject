@@ -20,17 +20,17 @@ public class PersonDAO {
         this.jdbcTemplate = jdbcTemplate;
     }
     public List<Person> index(){
-        return jdbcTemplate.query("select name, 'year' from person", new BeanPropertyRowMapper<>(Person.class));
+        return jdbcTemplate.query("select * from person", new BeanPropertyRowMapper<>(Person.class));
     }
 
-    public List<Book> showBooks(int id){
-        return jdbcTemplate.query("select name, author, 'year' from book where person_id = ?",
-                new Object[]{id}, new BeanPropertyRowMapper<>(Book.class));
+    public List<Book> indexPersonBooks(int person_id){
+        return jdbcTemplate.query("select * from book where person_id = ?", new Integer[]{person_id},
+                new BeanPropertyRowMapper<>(Book.class));
     }
 
-    public Optional<Person> show(int id) {
+    public Person show(int id) {
         return jdbcTemplate.query("SELECT * FROM person where person_id = ?", new Object[]{id},
-                new BeanPropertyRowMapper<>(Person.class)).stream().findAny();
+                new BeanPropertyRowMapper<>(Person.class)).stream().findAny().orElse(null);
     }
 
     public Optional<Person> show(String name) {
@@ -44,7 +44,7 @@ public class PersonDAO {
     }
 
     public void update(int id, Person updPerson){
-        jdbcTemplate.update("UPDATE person set name=?, year = ?,  where id=?",
+        jdbcTemplate.update("UPDATE person set name=?, year = ?  where person_id=?",
                 updPerson.getName(), updPerson.getYear(), new Object[]{id});
 
     }

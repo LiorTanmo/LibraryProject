@@ -2,22 +2,22 @@ package ru.lior.tutorial.models;
 
 import jakarta.validation.constraints.*;
 
+
 public class Person {
-    private int id;
-    @NotEmpty(message = "Name can't be empty")
-    @Pattern(regexp = "[А-Я]\\w+ \\s [А-Я]\\w+ \\s [А-Я]\\w+", message = "Enter proper name")
+    private int person_id;
+    @NotEmpty(message = "Имя не может быть пустым")
+    @Size(min = 2, max = 100,message = "Имя должно быть 2-100 символов")
     private String name;
 
-    @Min(value = 1900, message = "Enter a valid year")
-    @NotEmpty(message = "Year of birth can't be empty")
+    @Min(value = 1900, message = "Введите действительный год рождения")
     private int year;
 
-    public int getId() {
-        return id;
+    public int getPerson_id() {
+        return person_id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setPerson_id(int id) {
+        this.person_id = id;
     }
 
     public String getName() {
@@ -39,8 +39,8 @@ public class Person {
     public Person() {
     }
 
-    public Person(int id, String name, int year) {
-        this.id = id;
+    public Person(int person_id, String name, int year) {
+        this.person_id = person_id;
         this.name = name;
         this.year = year;
     }
